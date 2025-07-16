@@ -1,0 +1,114 @@
+body {
+  font-family: Verdana, Calibri, Helvetica, sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  color: #333;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 2rem;
+}
+
+header {
+  background: linear-gradient(90deg, #015351, #FD7D00);
+  color: white;
+  padding: 2rem 1rem;
+  text-align: center;
+  /* Optional for smoother edges */
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+
+.header-logo {
+  max-width: 300px;  /* adjust as needed */
+  width: 80%;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+
+.card-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.card {
+  background: white;
+  border: 2px solid #FD7D00;
+  border-radius: 10px;
+  overflow: visible;  /* Allow full image */
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  text-align: center;
+  /* Remove fixed height */
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card img {
+  width: 100%;      /* full width */
+  height: auto;     /* auto height to keep aspect ratio */
+  object-fit: contain;  /* prevent cropping */
+  display: block;
+  border-radius: 10px 10px 0 0;
+}
+
+.card h3 {
+  margin: 0;
+  padding: 0.5rem;
+  color: #015351;
+}
+
+#exercisesContainer {
+  margin-top: 2rem;
+}
+
+#exercisesContainer.hidden {
+  display: none;
+}
+
+#backBtn {
+  margin-bottom: 1rem;
+  background: #015351;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.exercise {
+  background: white;
+  border-left: 5px solid #FD7D00;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.exercise h4 {
+  margin: 0 0 0.5rem;
+  color: #015351;
+}
+
+.exercise .price {
+  color: #FD7D00;
+  font-weight: bold;
+}
+
+.exercise a {
+  display: inline-block;
+  margin-top: 0.5rem;
+  text-decoration: none;
+  background: #015351;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+}
