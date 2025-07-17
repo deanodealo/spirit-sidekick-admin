@@ -1,0 +1,40 @@
+body {
+  font-family: Verdana, sans-serif;
+  padding: 1rem;
+  background: #f9f9f9;
+}
+
+h1, h2 {
+  color: #015351;
+}
+
+form input, textarea, select {
+  display: block;
+  margin-bottom: 1rem;
+  padding: 0.6rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+button {
+  background-color: #015351;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #FD7D00;
+}
+
+.exerciseCard {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 5px;
+  max-width: 600px;
+}

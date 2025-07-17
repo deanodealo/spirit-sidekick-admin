@@ -18,7 +18,10 @@ header {
 }
 
 .logo {
-  height: 100px;
+  max-width: 300px;  /* adjust as needed */
+  width: 80%;
+  height: auto;
+  margin-bottom: 1rem;
 }
 
 .home-container {

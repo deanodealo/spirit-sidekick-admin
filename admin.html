@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="admin.css">
+  <script type="module" src="admin.js" defer></script>
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+
+  <!-- Category Selector -->
+  <label for="categorySelect"><strong>Select Category:</strong></label>
+  <select id="categorySelect">
+    <option value="Mediumship">Mediumship</option>
+    <option value="Trance">Trance</option>
+    <option value="Healing">Healing</option>
+    <option value="Inspirational Speaking">Inspirational Speaking</option>
+    <option value="Spiritual Philosophy">Spiritual Philosophy</option>
+  </select>
+
+<h2>Upload New Exercise</h2>
+<form id="uploadForm">
+  <label for="title">Title:</label><br>
+  <input type="text" id="titleInput" placeholder="Exercise Title" required><br><br>
+
+  <label for="description">Description:</label><br>
+  <textarea id="descriptionInput" placeholder="Short Description" required></textarea><br><br>
+
+  <label for="price">Price (£):</label><br>
+  <input type="number" id="priceInput" placeholder="e.g. 4.99" step="0.01" min="0" required><br><br>
+
+  <label for="pdfUrl">Google Drive PDF Link:</label><br>
+  <input type="url" id="pdfUrl" placeholder="https://drive.google.com/..." required><br><br>
+
+  <input type="hidden" id="disciplineInput">
+
+  <button type="submit">Upload PDF</button>
+</form>
+
+
+  <h2>Existing Exercises</h2>
+  <div id="exerciseList"></div>
+</body>
+</html>
