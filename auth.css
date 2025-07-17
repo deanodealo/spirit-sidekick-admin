@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to bottom right, #f8f9fa, #e0f7fa);
+  background: linear-gradient(to bottom right, #d6dada, #ffffff);
   color: #333;
   text-align: center;
 }
@@ -18,7 +18,7 @@ header {
 }
 
 .logo {
-  height: 60px;
+  height: 100px;
 }
 
 .home-container {

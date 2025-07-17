@@ -114,18 +114,22 @@ header {
 }
 
 #logoutBtn {
-  background-color: #015351; 
+  background-color: #015351;
   color: white;
   border: none;
-  padding: 10px 18px;
-  font-size: 16px;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
   font-weight: bold;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin: 1rem;
+  margin: 1rem auto;
+  display: block;
+  max-width: 200px;
+  width: 90%;
+  text-align: center;
 }
 
-#logoutBtn:hover{
+#logoutBtn:hover {
   background-color: #FD7D00;
 }
