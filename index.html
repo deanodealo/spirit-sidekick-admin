@@ -4,8 +4,78 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Spirit Sidekick</title>
-  <link rel="stylesheet" href="auth.css">
+  <link rel="stylesheet" href="auth.css" />
   <script type="module" src="auth.js" defer></script>
+
+  <style>
+    /* Animations */
+    @keyframes flyInFromLeft {
+      0% {
+        opacity: 0;
+        transform: translateX(-100%);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInFromRight {
+      0% {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Title styling */
+    .animated-title {
+      font-size: 3rem;
+      font-weight: 900;
+      margin: 1rem 0 0.5rem;
+      animation: flyInFromLeft 1s ease forwards;
+      opacity: 0;
+      color: #222; /* Adjust color if needed */
+      text-align: center;
+    }
+
+    /* Subtitle styling */
+    .animated-subtitle {
+      font-size: 1.25rem;
+      font-weight: 500;
+      font-style: italic;
+      animation: slideInFromRight 1s ease forwards;
+      animation-delay: 1s;
+      opacity: 0;
+      color: #555;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    /* Hero card styling */
+    .hero-card {
+      background: white;
+      max-width: 700px;
+      margin: 2rem auto 3rem;
+      padding: 2rem;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      line-height: 1.6;
+      font-size: 1.1rem;
+      color: #222;
+      text-align: center;
+    }
+
+    /* Center the main content */
+    .home-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+  </style>
 </head>
 <body>
   <header class="header">
@@ -13,8 +83,24 @@
   </header>
 
   <main class="home-container">
-    <h1>Welcome to Spirit Sidekick</h1>
-    <p>Explore spiritual exercises and insights</p>
+    <!-- Animated Title -->
+    <h1 class="animated-title">Spirit Sidekick</h1>
+
+    <!-- Animated Subtitle -->
+    <p class="animated-subtitle">Mediumship Made Real — Guided by Spirit, Backed by Experience</p>
+
+    <!-- Hero Card Section -->
+    <section class="hero-card">
+      <p>
+        Step into a world of grounded, honest, and powerful spiritual development.<br /><br />
+        From mediumship and trance to healing, philosophy, and inspirational speaking, Spirit Sidekick is your personal guide—offering real tools for real growth, every day.
+      </p>
+      <p>
+        Exercises, insights, and encouragement for solo work, pairs, and groups—no fluff, no fear, just the joy of walking your path with Spirit at your side.
+      </p>
+    </section>
+
+    <!-- Your existing auth content -->
     <div class="auth-buttons">
       <button onclick="showLogin()">Login</button>
       <button onclick="showRegister()">Register</button>
