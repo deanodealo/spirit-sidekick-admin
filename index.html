@@ -56,18 +56,25 @@
     }
 
     /* Hero card styling */
-    .hero-card {
-      background: white;
-      max-width: 700px;
-      margin: 2rem auto 3rem;
-      padding: 2rem;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-      border-radius: 10px;
-      line-height: 1.6;
-      font-size: 1.1rem;
-      color: #222;
-      text-align: center;
-    }
+.hero-card {
+  background: linear-gradient(135deg, #fefefe, #e6f0fa); /* soft gradient */
+  max-width: 700px;
+  margin: 2rem auto 3rem;
+  padding: 2.5rem 3rem;
+  border-radius: 15px;
+  border: 1px solid #d1d9e6; /* subtle border */
+  box-shadow: 0 8px 20px rgba(0, 0, 50, 0.1); /* soft shadow */
+  line-height: 1.7;
+  font-size: 1.15rem;
+  color: #2c3e50; /* darker, richer text color */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+}
+
+.hero-card:hover {
+  box-shadow: 0 12px 30px rgba(0, 0, 50, 0.15); /* subtle hover effect */
+}
 
     /* Center the main content */
     .home-container {

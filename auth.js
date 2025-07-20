@@ -1,4 +1,3 @@
-// auth.js
 import { auth, db } from './firebase-config.js';  // make sure firebase-config.js exports these correctly
 import {
   createUserWithEmailAndPassword,
@@ -11,17 +10,38 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
+// Helper to scroll to auth forms and focus first input of visible form
+function scrollToAuthForms() {
+  const forms = document.getElementById('auth-forms');
+  if (forms) {
+    forms.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Focus first visible input inside visible form after a short delay
+    setTimeout(() => {
+      const visibleForm = forms.querySelector('form:not(.hidden)');
+      if (visibleForm) {
+        const firstInput = visibleForm.querySelector('input');
+        if (firstInput) firstInput.focus();
+      }
+    }, 500);
+  }
+}
+
 // UI Handlers - show/hide login/register forms
 window.showLogin = () => {
   document.getElementById("auth-forms").classList.remove("hidden");
   document.getElementById("login-form").classList.remove("hidden");
   document.getElementById("register-form").classList.add("hidden");
+
+  scrollToAuthForms();
 };
 
 window.showRegister = () => {
   document.getElementById("auth-forms").classList.remove("hidden");
   document.getElementById("register-form").classList.remove("hidden");
   document.getElementById("login-form").classList.add("hidden");
+
+  scrollToAuthForms();
 };
 
 // Register
