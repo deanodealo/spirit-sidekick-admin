@@ -9,6 +9,7 @@
 <body>
   <h1>Admin Dashboard</h1>
 
+
   <!-- Category Selector -->
   <label for="categorySelect"><strong>Select Category:</strong></label>
   <select id="categorySelect">
@@ -30,13 +31,18 @@
   <label for="price">Price (£):</label><br>
   <input type="number" id="priceInput" placeholder="e.g. 4.99" step="0.01" min="0" required><br><br>
 
-  <label for="pdfUrl">Google Drive PDF Link:</label><br>
-  <input type="url" id="pdfUrl" placeholder="https://drive.google.com/..." required><br><br>
+  <label for="pdfFile">Upload PDF:</label><br>
+  <input type="file" id="pdfFile" accept="application/pdf" required><br><br>
 
   <input type="hidden" id="disciplineInput">
 
   <button type="submit">Upload PDF</button>
 </form>
+
+<div id="loadingSpinner" class="hidden">
+  <div class="spinner"></div>
+</div>
+
 
 
   <h2>Existing Exercises</h2>
