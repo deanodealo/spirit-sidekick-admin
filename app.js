@@ -7,7 +7,7 @@ const disciplines = [
   "Trance Mediumship",
   "Healing",
   "Inspirational Speaking",
-  "Philosophy"
+  "Spiritual Philosophy"
 ];
 
 const categoryGrid = document.getElementById("categoryGrid");
