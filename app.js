@@ -21,7 +21,7 @@ disciplines.forEach(name => {
   const card = document.createElement("div");
   card.className = "card";
   card.innerHTML = `
-    <img src="images/${name}.png" alt="${name}" />
+    <img src="images/${name.replace(/\s/g, "_")}.png" alt="${name}" />
     <h3>${name}</h3>
   `;
   card.addEventListener("click", () => loadExercises(name));
