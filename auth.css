@@ -18,11 +18,21 @@ header {
 }
 
 .logo {
-  max-width: 300px;  /* adjust as needed */
+  max-width: 300px;
   width: 80%;
   height: auto;
   margin-bottom: 1rem;
+  border-radius: 20px;           /* Rounded edges */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);  /* Soft shadow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effects */
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.3));
 }
+
+.logo:hover {
+  transform: scale(1.03);        /* Slight zoom on hover */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);  /* Enhanced shadow on hover */
+}
+
 
 .home-container {
   padding: 2rem;
