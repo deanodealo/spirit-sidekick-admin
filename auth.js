@@ -82,31 +82,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Login existing users (no redirect to members.html)
-  const loginForm = document.getElementById("login-form");
-  if (loginForm) {
-    loginForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const email = document.getElementById("login-email").value;
-      const password = document.getElementById("login-password").value;
+// Login existing users (no redirect to members.html)
+const loginForm = document.getElementById("login-form");
+if (loginForm) {
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const email = document.getElementById("login-email").value;
+    const password = document.getElementById("login-password").value;
 
-      alert("Login form submitted");
-      console.log("Login form submitted");
-      alert("Email entered: " + email);
-      console.log("Email entered:", email);
+    alert("Login form submitted");
+    console.log("Login form submitted");
+    alert("Email entered: " + email);
+    console.log("Email entered:", email);
 
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          alert("Login successful: " + userCredential.user.email);
-          console.log("Login successful:", userCredential.user.email);
-          // No redirect here - stay on index.html and update UI via onAuthStateChanged
-        })
-        .catch((err) => {
-          console.error("Login error:", err);
-          alert("Login error: " + err.message);
-        });
-    });
-  }
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        alert("Login successful: " + userCredential.user.email);
+        console.log("Login successful:", userCredential.user.email);
+
+        // Detect mobile devices and reload page to force UI update
+        if (/Mobi|Android/i.test(navigator.userAgent)) {
+          alert("Mobile device detected — reloading page to update UI");
+          window.location.reload();
+        }
+        // else desktop: no reload, UI updates via onAuthStateChanged
+      })
+      .catch((err) => {
+        console.error("Login error:", err);
+        alert("Login error: " + err.message);
+      });
+  });
+}
+
+
 
   // Persistent login state handling and UI update
   onAuthStateChanged(auth, (user) => {
