@@ -19,11 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
   setPersistence(auth, browserLocalPersistence)
     .then(() => {
       console.log("Auth persistence set to local (browserLocalPersistence)");
-      alert("Auth persistence set to local");
     })
     .catch((err) => {
       console.error("Error setting auth persistence:", err);
-      alert("Error setting auth persistence: " + err.message);
     });
 
   // Helper to scroll to auth forms and focus first input of visible form
@@ -82,12 +80,11 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(() => {
           console.log("Registration successful, redirecting to members.html");
-          alert("Registration successful!");
           window.location.href = "members.html"; // New users go directly to members area
         })
         .catch((err) => {
           console.error("Registration error:", err);
-          alert(err.message);
+          alert(err.message);  // Keeping alert here for errors
         });
     });
   }
@@ -100,26 +97,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById("login-email").value;
       const password = document.getElementById("login-password").value;
 
-      alert("Login form submitted");
       console.log("Login form submitted");
-      alert("Email entered: " + email);
       console.log("Email entered:", email);
 
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-          alert("Login successful: " + userCredential.user.email);
           console.log("Login successful:", userCredential.user.email);
 
           // Detect mobile devices and reload page to force UI update
           if (/Mobi|Android/i.test(navigator.userAgent)) {
-            alert("Mobile device detected — reloading page to update UI");
+            console.log("Mobile device detected — reloading page to update UI");
             window.location.reload();
           }
           // else desktop: no reload, UI updates via onAuthStateChanged
         })
         .catch((err) => {
           console.error("Login error:", err);
-          alert("Login error: " + err.message);
+          alert("Login error: " + err.message);  // Keeping alert here for errors
         });
     });
   }
@@ -220,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch((error) => {
           console.error("Logout error:", error);
-          alert("Logout error: " + error.message);
+          alert("Logout error: " + error.message);  // Keeping alert here for errors
         });
     });
   }
