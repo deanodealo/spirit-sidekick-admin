@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // UI Handlers - show/hide login/register forms
   window.showLogin = () => {
+    alert("Showing login form");
     console.log("Showing login form");
     document.getElementById("auth-forms").classList.remove("hidden");
     document.getElementById("login-form").classList.remove("hidden");
@@ -40,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.showRegister = () => {
+    alert("Showing register form");
     console.log("Showing register form");
     document.getElementById("auth-forms").classList.remove("hidden");
     document.getElementById("register-form").classList.remove("hidden");
@@ -56,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById("register-email").value;
       const password = document.getElementById("register-password").value;
 
+      alert("Register form submitted: " + email);
       console.log("Register form submitted", email);
 
       createUserWithEmailAndPassword(auth, email, password)
@@ -68,12 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         })
         .then(() => {
+          alert("Registration successful, redirecting to members.html");
           console.log("Registration successful, redirecting to members.html");
           window.location.href = "members.html"; // New users go directly to members area
         })
         .catch((err) => {
           console.error("Registration error:", err);
-          alert(err.message);
+          alert("Registration error: " + err.message);
         });
     });
   }
@@ -86,25 +90,30 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById("login-email").value;
       const password = document.getElementById("login-password").value;
 
+      alert("Login form submitted");
       console.log("Login form submitted");
+      alert("Email entered: " + email);
       console.log("Email entered:", email);
 
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
+          alert("Login successful: " + userCredential.user.email);
           console.log("Login successful:", userCredential.user.email);
           // No redirect here - stay on index.html and update UI via onAuthStateChanged
         })
         .catch((err) => {
           console.error("Login error:", err);
-          alert(err.message);
+          alert("Login error: " + err.message);
         });
     });
   }
 
   // Persistent login state handling and UI update
   onAuthStateChanged(auth, (user) => {
+    alert("onAuthStateChanged fired");
     console.log("onAuthStateChanged fired", user);
     if (user) {
+      alert("User logged in: " + user.email);
       // User logged in
       if (
         window.location.pathname.endsWith("index.html") ||
@@ -115,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       // If on members page, no action needed (user can stay)
     } else {
+      alert("User logged out");
       // User logged out
       if (window.location.pathname.endsWith("members.html")) {
         window.location.href = "index.html"; // Redirect to login if on members page
@@ -126,63 +136,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // UI updates based on login state
   function showLoggedInUI(user) {
-  // Hide login/register buttons and auth forms
-  const authButtons = document.querySelector('.auth-buttons');
-  if (authButtons) authButtons.style.display = 'none';
+    alert("Showing logged in UI for: " + user.email);
+    // Hide login/register buttons and auth forms
+    const authButtons = document.querySelector('.auth-buttons');
+    if (authButtons) authButtons.style.display = 'none';
 
-  const authForms = document.getElementById('auth-forms');
-  if (authForms) authForms.classList.add('hidden');
+    const authForms = document.getElementById('auth-forms');
+    if (authForms) authForms.classList.add('hidden');
 
-  // Show logged-in section (welcome + logout)
-  const loggedInSection = document.getElementById('logged-in-section');
-  if (loggedInSection) loggedInSection.style.display = 'block';
+    // Show logged-in section (welcome + logout)
+    const loggedInSection = document.getElementById('logged-in-section');
+    if (loggedInSection) loggedInSection.style.display = 'block';
 
-  // Show welcome message with user's email
-  let welcome = document.getElementById('welcomeMsg');
-  if (!welcome) {
-    welcome = document.createElement('p');
-    welcome.id = 'welcomeMsg';
-    welcome.style.textAlign = 'center';
-    welcome.style.marginTop = '1rem';
-    document.querySelector('.home-container').prepend(welcome);
+    // Show welcome message with user's email
+    let welcome = document.getElementById('welcomeMsg');
+    if (!welcome) {
+      welcome = document.createElement('p');
+      welcome.id = 'welcomeMsg';
+      welcome.style.textAlign = 'center';
+      welcome.style.marginTop = '1rem';
+      document.querySelector('.home-container').prepend(welcome);
+    }
+    welcome.textContent = `Welcome, ${user.email}`;
+
+    // Add Members link to burger menu if not present
+    const sideMenu = document.getElementById('sideMenu');
+    if (sideMenu && !document.getElementById('membersMenuItem')) {
+      const li = document.createElement('li');
+      li.id = 'membersMenuItem';
+      const a = document.createElement('a');
+      a.href = 'members.html';
+      a.textContent = 'Members';
+      li.appendChild(a);
+      sideMenu.querySelector('ul').appendChild(li);
+    }
   }
-  welcome.textContent = `Welcome, ${user.email}`;
 
-  // Add Members link to burger menu if not present
-  const sideMenu = document.getElementById('sideMenu');
-  if (sideMenu && !document.getElementById('membersMenuItem')) {
-    const li = document.createElement('li');
-    li.id = 'membersMenuItem';
-    const a = document.createElement('a');
-    a.href = 'members.html';
-    a.textContent = 'Members';
-    li.appendChild(a);
-    sideMenu.querySelector('ul').appendChild(li);
+  function showLoggedOutUI() {
+    alert("Showing logged out UI");
+    // Show login/register buttons
+    const authButtons = document.querySelector('.auth-buttons');
+    if (authButtons) authButtons.style.display = 'block';
+
+    // Hide auth forms container (add hidden class)
+    const authForms = document.getElementById('auth-forms');
+    if (authForms) authForms.classList.add('hidden');
+
+    // Hide logged-in section
+    const loggedInSection = document.getElementById('logged-in-section');
+    if (loggedInSection) loggedInSection.style.display = 'none';
+
+    // Remove welcome message
+    const welcome = document.getElementById('welcomeMsg');
+    if (welcome) welcome.remove();
+
+    // Remove Members link from burger menu if present
+    const membersItem = document.getElementById('membersMenuItem');
+    if (membersItem) membersItem.remove();
   }
-}
-
-function showLoggedOutUI() {
-  // Show login/register buttons
-  const authButtons = document.querySelector('.auth-buttons');
-  if (authButtons) authButtons.style.display = 'block';
-
-  // Hide auth forms container (add hidden class)
-  const authForms = document.getElementById('auth-forms');
-  if (authForms) authForms.classList.add('hidden');
-
-  // Hide logged-in section
-  const loggedInSection = document.getElementById('logged-in-section');
-  if (loggedInSection) loggedInSection.style.display = 'none';
-
-  // Remove welcome message
-  const welcome = document.getElementById('welcomeMsg');
-  if (welcome) welcome.remove();
-
-  // Remove Members link from burger menu if present
-  const membersItem = document.getElementById('membersMenuItem');
-  if (membersItem) membersItem.remove();
-}
-
 
   // Logout button logic
   const logoutBtn = document.getElementById('logoutBtn');
@@ -190,9 +201,11 @@ function showLoggedOutUI() {
     console.log("Logout button not found on this page.");
   } else {
     logoutBtn.addEventListener('click', () => {
+      alert("Logout button clicked");
       console.log("Logout button clicked");
       signOut(auth)
         .then(() => {
+          alert("Successfully signed out");
           console.log("Successfully signed out");
           window.location.href = "index.html";
         })
