@@ -76,13 +76,21 @@ if (loginForm) {
     const email = document.getElementById("login-email").value;
     const password = document.getElementById("login-password").value;
 
+    console.log("Login form submitted");
+    console.log("Email entered:", email);
+
     signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
+      .then((userCredential) => {
+        console.log("Login successful:", userCredential.user.email);
         // No redirect here - stay on index.html and update UI via onAuthStateChanged
       })
-      .catch((err) => alert(err.message));
+      .catch((err) => {
+        console.error("Login error:", err);
+        alert(err.message);
+      });
   });
 }
+
 
 // Persistent login state handling and UI update
 onAuthStateChanged(auth, (user) => {
