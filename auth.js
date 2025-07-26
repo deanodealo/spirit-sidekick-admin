@@ -126,65 +126,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // UI updates based on login state
   function showLoggedInUI(user) {
-    console.log("Showing logged-in UI for user:", user.email);
-    // Hide login/register buttons and auth forms
-    const authButtons = document.querySelector('.auth-buttons');
-    if (authButtons) authButtons.style.display = 'none';
+  // Hide login/register buttons and auth forms
+  const authButtons = document.querySelector('.auth-buttons');
+  if (authButtons) authButtons.style.display = 'none';
 
-    const authForms = document.getElementById('auth-forms');
-    if (authForms) authForms.classList.add('hidden');
+  const authForms = document.getElementById('auth-forms');
+  if (authForms) authForms.classList.add('hidden');
 
-    // Show logged-in section (welcome + logout + go to members)
-    const loggedInSection = document.getElementById('logged-in-section');
-    if (loggedInSection) loggedInSection.style.display = 'block';
+  // Show logged-in section (welcome + logout)
+  const loggedInSection = document.getElementById('logged-in-section');
+  if (loggedInSection) loggedInSection.style.display = 'block';
 
-    // Show welcome message with user's email
-    let welcome = document.getElementById('welcomeMsg');
-    if (!welcome) {
-      welcome = document.createElement('p');
-      welcome.id = 'welcomeMsg';
-      welcome.style.textAlign = 'center';
-      welcome.style.marginTop = '1rem';
-      document.querySelector('.home-container').prepend(welcome);
-    }
-    welcome.textContent = `Welcome, ${user.email}`;
-
-    // Add Members link to burger menu if not present
-    const sideMenu = document.getElementById('sideMenu');
-    if (sideMenu && !document.getElementById('membersMenuItem')) {
-      const li = document.createElement('li');
-      li.id = 'membersMenuItem';
-      const a = document.createElement('a');
-      a.href = 'members.html';
-      a.textContent = 'Members';
-      li.appendChild(a);
-      sideMenu.querySelector('ul').appendChild(li);
-      console.log("Added Members link to burger menu");
-    }
+  // Show welcome message with user's email
+  let welcome = document.getElementById('welcomeMsg');
+  if (!welcome) {
+    welcome = document.createElement('p');
+    welcome.id = 'welcomeMsg';
+    welcome.style.textAlign = 'center';
+    welcome.style.marginTop = '1rem';
+    document.querySelector('.home-container').prepend(welcome);
   }
+  welcome.textContent = `Welcome, ${user.email}`;
 
-  function showLoggedOutUI() {
-    console.log("Showing logged-out UI");
-    // Show login/register buttons
-    const authButtons = document.querySelector('.auth-buttons');
-    if (authButtons) authButtons.style.display = 'block';
-
-    // Show auth forms container hidden by default
-    const authForms = document.getElementById('auth-forms');
-    if (authForms) authForms.classList.add('hidden');
-
-    // Hide logged-in section
-    const loggedInSection = document.getElementById('logged-in-section');
-    if (loggedInSection) loggedInSection.style.display = 'none';
-
-    // Remove welcome message
-    const welcome = document.getElementById('welcomeMsg');
-    if (welcome) welcome.remove();
-
-    // Remove Members link from burger menu if present
-    const membersItem = document.getElementById('membersMenuItem');
-    if (membersItem) membersItem.remove();
+  // Add Members link to burger menu if not present
+  const sideMenu = document.getElementById('sideMenu');
+  if (sideMenu && !document.getElementById('membersMenuItem')) {
+    const li = document.createElement('li');
+    li.id = 'membersMenuItem';
+    const a = document.createElement('a');
+    a.href = 'members.html';
+    a.textContent = 'Members';
+    li.appendChild(a);
+    sideMenu.querySelector('ul').appendChild(li);
   }
+}
+
+function showLoggedOutUI() {
+  // Show login/register buttons
+  const authButtons = document.querySelector('.auth-buttons');
+  if (authButtons) authButtons.style.display = 'block';
+
+  // Hide auth forms container (add hidden class)
+  const authForms = document.getElementById('auth-forms');
+  if (authForms) authForms.classList.add('hidden');
+
+  // Hide logged-in section
+  const loggedInSection = document.getElementById('logged-in-section');
+  if (loggedInSection) loggedInSection.style.display = 'none';
+
+  // Remove welcome message
+  const welcome = document.getElementById('welcomeMsg');
+  if (welcome) welcome.remove();
+
+  // Remove Members link from burger menu if present
+  const membersItem = document.getElementById('membersMenuItem');
+  if (membersItem) membersItem.remove();
+}
+
 
   // Logout button logic
   const logoutBtn = document.getElementById('logoutBtn');
