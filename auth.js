@@ -73,6 +73,7 @@ const loginForm = document.getElementById("login-form");
 if (loginForm) {
   loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
+    console.log("Login form submitted"); // <-- Add this
     const email = document.getElementById("login-email").value;
     const password = document.getElementById("login-password").value;
 
