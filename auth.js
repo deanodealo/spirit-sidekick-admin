@@ -135,42 +135,55 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // UI updates based on login state
-  function showLoggedInUI(user) {
-    alert("Showing logged in UI for: " + user.email);
-    // Hide login/register buttons and auth forms
-    const authButtons = document.querySelector('.auth-buttons');
-    if (authButtons) authButtons.style.display = 'none';
+function showLoggedInUI(user) {
+  console.log("showLoggedInUI running for:", user.email);
 
-    const authForms = document.getElementById('auth-forms');
-    if (authForms) authForms.classList.add('hidden');
+  const authButtons = document.querySelector('.auth-buttons');
+  const authForms = document.getElementById('auth-forms');
+  const loggedInSection = document.getElementById('logged-in-section');
+  const sideMenu = document.getElementById('sideMenu');
 
-    // Show logged-in section (welcome + logout)
-    const loggedInSection = document.getElementById('logged-in-section');
-    if (loggedInSection) loggedInSection.style.display = 'block';
-
-    // Show welcome message with user's email
-    let welcome = document.getElementById('welcomeMsg');
-    if (!welcome) {
-      welcome = document.createElement('p');
-      welcome.id = 'welcomeMsg';
-      welcome.style.textAlign = 'center';
-      welcome.style.marginTop = '1rem';
-      document.querySelector('.home-container').prepend(welcome);
-    }
-    welcome.textContent = `Welcome, ${user.email}`;
-
-    // Add Members link to burger menu if not present
-    const sideMenu = document.getElementById('sideMenu');
-    if (sideMenu && !document.getElementById('membersMenuItem')) {
-      const li = document.createElement('li');
-      li.id = 'membersMenuItem';
-      const a = document.createElement('a');
-      a.href = 'members.html';
-      a.textContent = 'Members';
-      li.appendChild(a);
-      sideMenu.querySelector('ul').appendChild(li);
-    }
+  // Hide login/register buttons and force reflow
+  if (authButtons) {
+    authButtons.style.display = 'none';
+    authButtons.offsetHeight;  // <-- this forces browser reflow
   }
+
+  // Hide auth forms and force reflow
+  if (authForms) {
+    authForms.classList.add('hidden');
+    authForms.offsetHeight;
+  }
+
+  // Show logged-in section and force reflow
+  if (loggedInSection) {
+    loggedInSection.style.display = 'block';
+    loggedInSection.offsetHeight;
+  }
+
+  // Show welcome message with user's email
+  let welcome = document.getElementById('welcomeMsg');
+  if (!welcome) {
+    welcome = document.createElement('p');
+    welcome.id = 'welcomeMsg';
+    welcome.style.textAlign = 'center';
+    welcome.style.marginTop = '1rem';
+    document.querySelector('.home-container').prepend(welcome);
+  }
+  welcome.textContent = `Welcome, ${user.email}`;
+
+  // Add Members link to burger menu if not present
+  if (sideMenu && !document.getElementById('membersMenuItem')) {
+    const li = document.createElement('li');
+    li.id = 'membersMenuItem';
+    const a = document.createElement('a');
+    a.href = 'members.html';
+    a.textContent = 'Members';
+    li.appendChild(a);
+    sideMenu.querySelector('ul').appendChild(li);
+  }
+}
+
 
   function showLoggedOutUI() {
     alert("Showing logged out UI");
