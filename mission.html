@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Our Mission | Psyche</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background-color: #ffffff;
+      color: #113e1d;
+    }
+
+    header {
+      background-color: white;
+      text-align: center;
+      padding: 1.5rem 1rem;
+      border-bottom: 1px solid #ddd;
+      position: relative;
+    }
+
+    .header-logo {
+      max-width: 280px;
+      width: 80%;
+      height: auto;
+    }
+
+    /* Burger button styles */
+    .burger-container {
+      position: absolute;
+      top: 1.2rem;
+      left: 1.2rem;
+      z-index: 1001;
+    }
+
+    .burger {
+      font-size: 2rem;
+      cursor: pointer;
+      user-select: none;
+      color: #074d27;
+    }
+
+    /* Side menu styles */
+    .side-menu {
+      position: fixed;
+      top: 1rem;
+      left: -250px;
+      width: 220px;
+      height: auto;
+      background: linear-gradient(to bottom, #f0f0f0, #ffffff);
+      border-radius: 12px;
+      box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 1.5rem 0;
+      transition: left 0.3s ease;
+      z-index: 1000;
+    }
+
+    .side-menu.open {
+      left: 1rem;
+    }
+
+    .side-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .side-menu li {
+      margin: 1.2rem 0;
+      text-align: center;
+    }
+
+    .side-menu a {
+      text-decoration: none;
+      color: #015351;
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      display: block;
+      border-radius: 6px;
+      transition: background 0.2s ease;
+    }
+
+    .side-menu a:hover {
+      background-color: #e0f7f5;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.8rem;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #333;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .intro-text {
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    .intro-text h2 {
+      color: #ec860a;
+      text-transform: uppercase;
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .intro-text p {
+      color: #113e1d;
+      font-size: 1.2rem;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .mission-hero {
+      background-color: #fdfaf5; /* eggshell white */
+      padding: 3rem 1.5rem;
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .mission-hero h3 {
+      color: #113e1d;
+      font-size: 1.4rem;
+      font-weight: 500;
+      line-height: 1.6;
+      max-width: 700px;
+      margin: 0 auto;
+      white-space: pre-line;
+    }
+
+    .site-footer {
+      background-color: #008080; /* teal */
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="burger-container">
+      <div class="burger" id="burger">&#9776;</div>
+    </div>
+    <img src="images/Light.jpg" alt="Spirit Sidekick Logo" class="header-logo" />
+  </header>
+
+  <nav class="side-menu" id="sideMenu">
+    <div class="close-btn" id="closeBtn">&times;</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="mission.html">Our Mission</a></li>
+      <li><a href="News & Events">News & Events</a></li>
+      <li><a href="Shop">Shop</a></li>
+    </ul>
+  </nav>
+
+  <section class="intro-text">
+    <h2>WELCOME TO PSYCHE, AN INTERNATIONAL, NON-RELIGIOUS ORGANISATION</h2>
+    <p>
+      At Psyche, we are dedicated to pursuing spiritual growth and understanding through high-quality education, rigorous research, spiritual industry support, and a supportive community.
+    </p>
+  </section>
+
+  <section class="mission-hero">
+    <h3>🌟 Our Mission:
+
+To promote Education, Truth, Kindness, and Spirituality, while upholding accountability within the Spiritual Industry</h3>
+  </section>
+
+  <footer class="site-footer">
+    &copy; Psyche Education and Research Centre Ltd 14794589 | All Rights Reserved.
+  </footer>
+
+  <script>
+    const burger = document.getElementById('burger');
+    const sideMenu = document.getElementById('sideMenu');
+    const closeBtn = document.getElementById('closeBtn');
+
+    burger.addEventListener('click', () => {
+      sideMenu.classList.toggle('open');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      sideMenu.classList.remove('open');
+    });
+  </script>
+</body>
+</html>

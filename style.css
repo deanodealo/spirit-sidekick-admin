@@ -1,8 +1,9 @@
 body {
-  font-family: Verdana, Calibri, Helvetica, sans-serif;
+  font-family: 'Roboto', sans-serif;
   background-color: #f5f5f5;
   margin: 0;
   color: #333;
+  font-size: 1.1rem; /* Larger base font */
 }
 
 .container {
@@ -12,49 +13,35 @@ body {
 }
 
 header {
-  background: linear-gradient(90deg, #015351, #FD7D00);
-  color: white;
-  padding: 2rem 1rem;
+  background-color: white;
   text-align: center;
-  /* Optional for smoother edges */
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  padding: 1.5rem 1rem;
+  border-bottom: 1px solid #ddd;
+  position: relative;
 }
-
 
 .header-logo {
-  max-width: 300px;
+  max-width: 280px;
   width: 80%;
   height: auto;
-  margin-bottom: 1rem;
-  border-radius: 20px;           /* Rounded edges */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);  /* Soft shadow */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effects */
 }
-
-.header-logo:hover {
-  transform: scale(1.03);        /* Slight zoom on hover */
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);  /* Enhanced shadow on hover */
-}
-
 
 .card-grid {
   display: grid;
   gap: 1.5rem;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin: 2rem 0;
 }
 
 .card {
   background: white;
   border: 2px solid #FD7D00;
-  border-radius: 10px;
-  overflow: visible;  /* Allow full image */
-  cursor: pointer;
-  transition: transform 0.2s ease;
+  border-radius: 20px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.08);
   text-align: center;
-  /* Remove fixed height */
+  transition: transform 0.2s ease;
+  padding: 1rem;
+  cursor: pointer;
 }
 
 .card:hover {
@@ -62,53 +49,58 @@ header {
 }
 
 .card img {
-  width: 100%;      /* full width */
-  height: auto;     /* auto height to keep aspect ratio */
-  object-fit: contain;  /* prevent cropping */
-  display: block;
-  border-radius: 10px 10px 0 0;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover img {
+  box-shadow: 0 0 15px 5px orange;
 }
 
 .card h3 {
   margin: 0;
   padding: 0.5rem;
   color: #015351;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
 #exercisesContainer {
   margin-top: 2rem;
+  border-radius: 15px;
+  background: #fff;
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 #exercisesContainer.hidden {
   display: none;
 }
 
-#backBtn {
-  margin-bottom: 1rem;
-  background: #015351;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
 .exercise {
   background: white;
   border-left: 5px solid #FD7D00;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .exercise h4 {
   margin: 0 0 0.5rem;
   color: #015351;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .exercise .price {
   color: #FD7D00;
   font-weight: bold;
+  font-size: 1.1rem;
 }
 
 .exercise a {
@@ -117,8 +109,20 @@ header {
   text-decoration: none;
   background: #015351;
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 5px;
+  font-weight: bold;
+}
+
+#backBtn {
+  margin-bottom: 2rem;
+  background: #015351;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
 #logoutBtn {
@@ -131,13 +135,84 @@ header {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin: 1rem auto;
+  margin: 2rem auto;
   display: block;
   max-width: 200px;
   width: 90%;
   text-align: center;
 }
 
-#logoutBtn:hover {
+#logoutBtn:hover,
+#backBtn:hover {
   background-color: #FD7D00;
+}
+
+.site-footer {
+  background-color: #008080;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  font-size: 1rem;
+  margin-top: 3rem;
+  border-top: 4px solid #FD7D00;
+}
+
+
+.burger-container {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.2rem;
+  z-index: 1001; /* above the side menu */
+}
+
+.burger {
+  font-size: 2rem;
+  cursor: pointer;
+  user-select: none;
+  color: #074d27;
+}
+
+.side-menu {
+  position: fixed;
+  top: 1rem;
+  left: -250px; /* hidden offscreen */
+  width: 220px;
+  height: 100vh; /* full viewport height */
+  background: linear-gradient(to bottom, #f0f0f0, #ffffff);
+  border-radius: 12px;
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 1.5rem 0;
+  transition: left 0.3s ease;
+  z-index: 1000;
+  overflow-y: auto; /* allow scrolling */
+}
+
+.side-menu.open {
+  left: 0; /* flush with left edge */
+}
+
+.side-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.side-menu li {
+  margin: 1.2rem 0;
+  text-align: center;
+}
+
+.side-menu a {
+  text-decoration: none;
+  color: #015351;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  display: block;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.side-menu a:hover {
+  background-color: #e0f7f5;
 }

@@ -1,41 +1,124 @@
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to bottom right, #d6dada, #ffffff);
+  font-family: 'Roboto', sans-serif;
+  background-color: #ffffff;  /* changed from gradient */
   color: #333;
   text-align: center;
 }
 
 header {
-  background: linear-gradient(90deg, #015351, #FD7D00);
-  color: white;
-  padding: 2rem 1rem;
+  background-color: white;
   text-align: center;
-  /* Optional for smoother edges */
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  padding: 1.5rem 1rem; /* matched mission */
+  border-bottom: 1px solid #ddd;
+  position: relative;   /* added for burger positioning */
 }
 
 .logo {
-  max-width: 300px;
+  max-width: 280px;
   width: 80%;
   height: auto;
-  margin-bottom: 1rem;
-  border-radius: 20px;           /* Rounded edges */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);  /* Soft shadow */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effects */
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.3));
 }
 
 .logo:hover {
-  transform: scale(1.03);        /* Slight zoom on hover */
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);  /* Enhanced shadow on hover */
+  transform: scale(1.03);        
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
+.burger-container {
+  position: absolute;
+  top: 1.2rem;  /* matched mission */
+  left: 1.2rem;
+  z-index: 1001;
+}
+
+.burger {
+  font-size: 2rem;
+  cursor: pointer;
+  user-select: none;
+  color: #074d27;
+}
+
+.side-menu {
+  position: fixed;
+  top: 1rem;
+  left: -250px;
+  width: 220px;
+  height: auto;  /* changed from fixed height */
+  background: linear-gradient(to bottom, #f0f0f0, #ffffff);
+  border-radius: 12px; /* slightly more rounded */
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 1.5rem 0;
+  transition: left 0.3s ease;
+  z-index: 1000;
+}
+
+.side-menu.open {
+  left: 1rem;
+}
+
+.side-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.side-menu li {
+  margin: 1.2rem 0; /* matched mission */
+  text-align: center;
+}
+
+.side-menu a {
+  text-decoration: none;
+  color: #015351;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  display: block;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.side-menu a:hover {
+  background-color: #e0f7f5;
+}
+
+.close-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.8rem;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  user-select: none;
+}
 
 .home-container {
   padding: 2rem;
+}
+
+/* Keep the contact-section styles if you want those colorful blocks on index */
+.contact-section {
+  padding: 2rem 1.5rem;
+  color: white;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  border-radius: 1rem;
+  font-weight: 350;
+  font-size: 1.3rem;
+}
+
+.green-bg {
+  background-color: #eec962;
+}
+
+.orange-bg {
+  background-color: #ec860a;
+}
+
+.teal-bg {
+  background-color: #008080;
 }
 
 .auth-buttons button {
@@ -85,4 +168,11 @@ header {
   display: none;
 }
 
-
+.site-footer {
+  background-color: #008080; /* teal to match mission page */
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  margin-top: 3rem;
+}
