@@ -86,17 +86,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById("login-email").value;
       const password = document.getElementById("login-password").value;
 
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          // On mobile devices reload to update UI properly
-          if (/Mobi|Android/i.test(navigator.userAgent)) {
-            window.location.reload();
-          }
-          // On desktop UI updates automatically via onAuthStateChanged
-        })
-        .catch((err) => {
-          alert("Login error: " + err.message);
-        });
+signInWithEmailAndPassword(auth, email, password)
+  .then(() => {
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+      // Delay reload slightly to allow Firebase auth session to fully initialize
+      setTimeout(() => {
+        window.location.reload();
+      }, 500); // 500ms delay — adjust if needed
+    }
+    // On desktop, UI will update automatically via onAuthStateChanged
+  })
+  .catch((err) => {
+    alert("Login error: " + err.message);
+  });
     });
   }
 
