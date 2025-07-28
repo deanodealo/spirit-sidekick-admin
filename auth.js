@@ -78,29 +78,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Login existing users (no redirect to members.html)
-  const loginForm = document.getElementById("login-form");
-  if (loginForm) {
-    loginForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const email = document.getElementById("login-email").value;
-      const password = document.getElementById("login-password").value;
+// Login existing users (redirect to members.html)
+const loginForm = document.getElementById("login-form");
+if (loginForm) {
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const email = document.getElementById("login-email").value;
+    const password = document.getElementById("login-password").value;
 
-signInWithEmailAndPassword(auth, email, password)
-  .then(() => {
-    if (/Mobi|Android/i.test(navigator.userAgent)) {
-      // Delay reload slightly to allow Firebase auth session to fully initialize
-      setTimeout(() => {
-        window.location.reload();
-      }, 500); // 500ms delay — adjust if needed
-    }
-    // On desktop, UI will update automatically via onAuthStateChanged
-  })
-  .catch((err) => {
-    alert("Login error: " + err.message);
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        // Redirect to members area after successful login
+        window.location.href = "members.html";
+      })
+      .catch((err) => {
+        alert("Login error: " + err.message);
+      });
   });
-    });
-  }
+}
+
 
   // Persistent login state handling and UI update
   onAuthStateChanged(auth, (user) => {
