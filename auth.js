@@ -5,7 +5,8 @@ import {
   signOut,
   onAuthStateChanged,
   setPersistence,
-  browserLocalPersistence
+  browserLocalPersistence,
+  updateProfile
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   doc,
@@ -18,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Set auth persistence to local (store session in browser local storage)
   setPersistence(auth, browserLocalPersistence)
     .catch(() => {
-      // Optional: handle persistence errors silently or show minimal alert if needed
       alert("Error setting auth persistence.");
     });
 
@@ -52,66 +52,64 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollToAuthForms();
   };
 
-  // Register new users
+  // Register new users (updated to capture name)
   const registerForm = document.getElementById("register-form");
   if (registerForm) {
-    registerForm.addEventListener("submit", (e) => {
+    registerForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      const name = document.getElementById("register-name").value.trim();
       const email = document.getElementById("register-email").value;
       const password = document.getElementById("register-password").value;
 
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          // Save user info to Firestore
-          return setDoc(doc(db, "users", user.uid), {
-            email: user.email,
-            createdAt: serverTimestamp()
-          });
-        })
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Update Firebase Auth profile with displayName
+        await updateProfile(user, { displayName: name });
+
+        // Save user info to Firestore including name
+        await setDoc(doc(db, "users", user.uid), {
+          name: name,
+          email: user.email,
+          createdAt: serverTimestamp()
+        });
+
+        window.location.href = "members.html"; // New users go directly to members area
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+  }
+
+  // Login existing users (redirect to members.html)
+  const loginForm = document.getElementById("login-form");
+  if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+
+      signInWithEmailAndPassword(auth, email, password)
         .then(() => {
-          window.location.href = "members.html"; // New users go directly to members area
+          window.location.href = "members.html";
         })
         .catch((err) => {
-          alert(err.message);  // Keep alerts only for errors
+          alert("Login error: " + err.message);
         });
     });
   }
 
-// Login existing users (redirect to members.html)
-const loginForm = document.getElementById("login-form");
-if (loginForm) {
-  loginForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const email = document.getElementById("login-email").value;
-    const password = document.getElementById("login-password").value;
-
-    signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        // Redirect to members area after successful login
-        window.location.href = "members.html";
-      })
-      .catch((err) => {
-        alert("Login error: " + err.message);
-      });
-  });
-}
-
-
   // Persistent login state handling and UI update
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      if (
-        window.location.pathname.endsWith("index.html") ||
-        window.location.pathname === "/" ||
-        window.location.pathname === "/index.html"
-      ) {
-        showLoggedInUI(user);
-      }
-      // No redirect needed if already on members page
+      // Show logged-in UI on any page
+      showLoggedInUI(user);
     } else {
+      // Redirect logged out users away from members.html
       if (window.location.pathname.endsWith("members.html")) {
-        window.location.href = "index.html"; // Redirect logged out users from members page
+        window.location.href = "index.html";
       } else {
         showLoggedOutUI();
       }
@@ -135,9 +133,12 @@ if (loginForm) {
       welcome.id = 'welcomeMsg';
       welcome.style.textAlign = 'center';
       welcome.style.marginTop = '1rem';
-      document.querySelector('.home-container').prepend(welcome);
+      const homeContainer = document.querySelector('.home-container');
+      if (homeContainer) {
+        homeContainer.prepend(welcome);
+      }
     }
-    welcome.textContent = `Welcome, ${user.email}`;
+    if (welcome) welcome.textContent = `Welcome, ${user.displayName || user.email}`;
 
     const sideMenu = document.getElementById('sideMenu');
     if (sideMenu && !document.getElementById('membersMenuItem')) {
@@ -177,7 +178,7 @@ if (loginForm) {
           window.location.href = "index.html";
         })
         .catch((error) => {
-          alert("Logout error: " + error.message);  // Only alert on logout errors
+          alert("Logout error: " + error.message);
         });
     });
   }

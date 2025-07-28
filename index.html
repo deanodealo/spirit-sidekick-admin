@@ -72,20 +72,21 @@
     <div class="burger" id="burger">&#9776;</div>
   </div>
   <img src="images/Light.jpg" alt="Spirit Sidekick Logo" class="logo" />
+    <!-- Animated Title -->
+  <h1 class="animated-title">Spirit Sidekick</h1>
   <nav class="side-menu" id="sideMenu">
     <div class="close-btn" id="closeBtn">&times;</div>
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="mission.html">Our Mission</a></li>
-      <li><a href="news.html">News & Events</a></li>
+      <li><a href="newsandevents.html">News & Events</a></li>
       <!-- The "Members" link will be dynamically inserted by auth.js when user is logged in -->
     </ul>
   </nav>
 </header>
 
 <main class="home-container">
-  <!-- Animated Title -->
-  <h1 class="animated-title">Spirit Sidekick</h1>
+
 
   <!-- Animated Subtitle -->
   <p class="animated-subtitle">Mediumship Made Real — Guided by Spirit, Backed by Experience</p>
@@ -94,7 +95,7 @@
     <p>Step into a world of grounded, honest, and powerful spiritual development</p>
   </section>
 
-  <section class="contact-section orange-bg">
+  <section class="contact-section eggshell-bg">
     <p>From mediumship and trance to healing, philosophy, and inspirational speaking, Spirit Sidekick is your personal guide—offering real tools for real growth, every day</p>
   </section>
 
@@ -117,6 +118,7 @@
     </form>
 
     <form id="register-form" class="auth-form hidden">
+      <input type="text" id="register-name" placeholder="Your Name" required />
       <input type="email" id="register-email" placeholder="Email" required />
       <input type="password" id="register-password" placeholder="Password" required />
       <button type="submit">Register</button>

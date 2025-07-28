@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Spirit Sidekick</title>
   <link rel="stylesheet" href="style.css" />
+  <script type="module" src="auth.js" defer></script>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
 </head>
 <body>
@@ -18,7 +19,7 @@
   <!-- Main Centered Content -->
   <div class="container" style="text-align: center;">
     <img src="images/Light.jpg" alt="Spirit Sidekick Logo" class="header-logo" />
-    <p>Select a discipline to view available exercises</p>
+    <p>Please select a discipline to view the available exercises</p>
   </div>
 
   <!-- Side Menu -->
@@ -27,7 +28,7 @@
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="mission.html">Our Mission</a></li>
-      <li><a href="news.html">News & Events</a></li>
+      <li><a href="newsandevents.html">News & Events</a></li>
     </ul>
   </nav>
 </header>
@@ -38,18 +39,21 @@
     <!-- Discipline cards inserted here -->
   </div>
 
-  <div id="exercisesContainer" class="hidden">
+  <div id="exercisesContainer" style="display: none;">
     <button id="backBtn">← Back to Categories</button>
     <h2 id="disciplineTitle"></h2>
     <div id="exerciseList"></div>
   </div>
 </main>
 
-<button id="logoutBtn">Logout</button>
+<div id="logged-in-section" style="display: none; text-align: center; margin-top: 2rem;">
+  <button id="logoutBtn">Logout</button>
+</div>
 
-<footer>
-  <p>&copy; 2025 Spirit Sidekick</p>
-</footer>
+
+  <footer class="site-footer">
+    &copy; Psyche Education and Research Centre Ltd 14794589 | All Rights Reserved.
+  </footer>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -126,50 +130,51 @@
       categoryGrid.appendChild(card);
     });
 
-    categoryGrid.classList.remove("hidden");
-    exercisesContainer.classList.add("hidden");
+    categoryGrid.style.display = "grid";  
+    exercisesContainer.style.display = "none";
     exerciseList.innerHTML = "";
     disciplineTitle.textContent = "";
   }
 
   // Load exercises filtered by selected discipline
-  async function loadExercises() {
-    const discipline = localStorage.getItem("selectedDiscipline");
-    if (!discipline) {
-      showDisciplineCards();
-      return;
-    }
-
-    disciplineTitle.textContent = discipline;
-    categoryGrid.classList.add("hidden");
-    exercisesContainer.classList.remove("hidden");
-
-    exerciseList.innerHTML = "Loading...";
-
-    const q = query(collection(db, "exercises"), where("discipline", "==", discipline));
-    const snapshot = await getDocs(q);
-
-    exerciseList.innerHTML = "";
-
-    if (snapshot.empty) {
-      exerciseList.innerHTML = `<p>No exercises found for ${discipline}.</p>`;
-      return;
-    }
-
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const item = document.createElement("div");
-      item.classList.add("exercise-item");
-      item.innerHTML = `
-        <h3>${data.title}</h3>
-        <p>${data.description}</p>
-        <p><strong>Price:</strong> £${data.price?.toFixed(2) || "Free"}</p>
-        <a href="${data.pdfUrl}" target="_blank" rel="noopener noreferrer">View PDF</a>
-        <hr>
-      `;
-      exerciseList.appendChild(item);
-    });
+async function loadExercises() {
+  const discipline = localStorage.getItem("selectedDiscipline");
+  if (!discipline) {
+    showDisciplineCards();
+    return;
   }
+
+  disciplineTitle.textContent = discipline;
+  categoryGrid.style.display = "none";       // <-- HIDE categories
+  exercisesContainer.style.display = "block"; // <-- SHOW exercises container
+
+  exerciseList.innerHTML = "Loading...";
+
+  const q = query(collection(db, "exercises"), where("discipline", "==", discipline));
+  const snapshot = await getDocs(q);
+
+  exerciseList.innerHTML = "";
+
+  if (snapshot.empty) {
+    exerciseList.innerHTML = `<p>No exercises found for ${discipline}.</p>`;
+    return;
+  }
+
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    const item = document.createElement("div");
+    item.classList.add("exercise-item");
+    item.innerHTML = `
+      <h3>${data.title}</h3>
+      <p>${data.description}</p>
+      <p><strong>Price:</strong> £${data.price?.toFixed(2) || "Free"}</p>
+      <a href="${data.pdfUrl}" target="_blank" rel="noopener noreferrer">View PDF</a>
+      <hr>
+    `;
+    exerciseList.appendChild(item);
+  });
+}
+
 
   backBtn.addEventListener("click", () => {
     localStorage.removeItem("selectedDiscipline");
@@ -191,9 +196,6 @@ document.getElementById('burger').addEventListener('click', () => {
 document.getElementById('closeBtn').addEventListener('click', () => {
   document.getElementById('sideMenu').classList.remove('open');
 });
-
-</script>
-
 
 </script>
 

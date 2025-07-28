@@ -98,28 +98,21 @@ header {
   padding: 2rem;
 }
 
-/* Keep the contact-section styles if you want those colorful blocks on index */
-.contact-section {
-  padding: 2rem 1.5rem;
-  color: white;
+
+
+.eggshell-bg {
+  background-color: #fdfaf5; /* eggshell white */
+  padding: 2rem 1rem;
+  color: #333;
   text-align: center;
-  margin-bottom: 1.5rem;
-  border-radius: 1rem;
-  font-weight: 350;
-  font-size: 1.3rem;
+  border-top: 2px solid #ccc;
+  border-bottom: 2px solid #ccc;
 }
 
-.green-bg {
-  background-color: #eec962;
-}
 
-.orange-bg {
-  background-color: #ec860a;
-}
 
-.teal-bg {
-  background-color: #008080;
-}
+
+
 
 .auth-buttons button {
   margin: 0.5rem;
