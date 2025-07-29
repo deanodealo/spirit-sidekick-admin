@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="style.css" />
   <script type="module" src="auth.js" defer></script>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://www.paypal.com/sdk/js?client-id=Ab77PEENW-LJ6z_wDyB0UjmnJaEnHAqQgfd7QBJlvKkOBHOttYaBKDnnweDC1v6HE84FnO3OzbInVMOS&currency=GBP"></script>
+
 </head>
 <body>
 
@@ -54,7 +56,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, query, where, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
   import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
   const firebaseConfig = {
@@ -133,7 +135,18 @@
     disciplineTitle.textContent = "";
   }
 
-  // Load exercises filtered by selected discipline
+
+const user = auth.currentUser;
+let userPurchases = {};
+
+if (user) {
+  const userPurchaseDoc = await getDoc(doc(db, "purchases", user.uid));
+  if (userPurchaseDoc.exists()) {
+    userPurchases = userPurchaseDoc.data();
+  }
+}
+
+
 async function loadExercises() {
   const discipline = localStorage.getItem("selectedDiscipline");
   if (!discipline) {
@@ -147,6 +160,16 @@ async function loadExercises() {
 
   exerciseList.innerHTML = "Loading...";
 
+  const user = auth.currentUser;
+  let userPurchases = {};
+
+  if (user) {
+    const userPurchaseDoc = await getDoc(doc(db, "purchases", user.uid));
+    if (userPurchaseDoc.exists()) {
+      userPurchases = userPurchaseDoc.data();
+    }
+  }
+
   const q = query(collection(db, "exercises"), where("discipline", "==", discipline));
   const snapshot = await getDocs(q);
 
@@ -158,19 +181,58 @@ async function loadExercises() {
   }
 
   snapshot.forEach(doc => {
-    const data = doc.data();
+    const exercise = doc.data();
     const item = document.createElement("div");
     item.classList.add("exercise-item");
+    const pdfId = doc.id;
+    const purchased = !!userPurchases[pdfId];
+
     item.innerHTML = `
-      <h3>${data.title}</h3>
-      <p>${data.description}</p>
-      <p><strong>Price:</strong> £${data.price?.toFixed(2) || "Free"}</p>
-      <a href="${data.pdfUrl}" target="_blank" rel="noopener noreferrer">View PDF</a>
+      <h3>${exercise.title}</h3>
+      <p>${exercise.description}</p>
+      <p><strong>Price:</strong> £${exercise.price?.toFixed(2) || "Free"}</p>
+      <div id="pdf-access-${pdfId}" class="${purchased ? '' : 'locked'}">
+  ${purchased 
+    ? `<a href="${exercise.pdfUrl}" target="_blank" rel="noopener noreferrer" class="purchased">✅ View PDF (Purchased)</a>`
+    : `<div id="paypal-button-container-${pdfId}"></div>`
+  }
+</div>
       <hr>
     `;
     exerciseList.appendChild(item);
-  });
-}
+
+    if (!purchased) {
+      paypal.Buttons({
+        createOrder: function(data, actions) {
+          return actions.order.create({
+            purchase_units: [{
+              amount: {
+                value: exercise.price?.toFixed(2) || "0.00"
+              },
+              description: exercise.title
+            }]
+          });
+        },
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(async function(details) {
+            const user = auth.currentUser;
+            if (user) {
+              const purchaseRef = doc(db, "purchases", user.uid);
+              await setDoc(purchaseRef, { [pdfId]: true }, { merge: true });
+            }
+
+            const purchaseContainer = document.getElementById(`pdf-access-${pdfId}`);
+            purchaseContainer.innerHTML = `<p style="color: green; font-weight: bold;">✅ Payment successful! Unlocking your PDF...</p>`;
+
+            setTimeout(() => {
+              purchaseContainer.innerHTML = `<a href="${exercise.pdfUrl}" target="_blank" rel="noopener noreferrer" class="purchased">✅ View PDF (Purchased)</a>`;
+            }, 3000);
+          });
+        }
+      }).render(`#paypal-button-container-${pdfId}`);
+    }
+  }); // end of snapshot.forEach
+} // end of loadExercises
 
 
   backBtn.addEventListener("click", () => {
