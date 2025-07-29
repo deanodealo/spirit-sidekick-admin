@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Spirit Sidekick</title>
   <link rel="stylesheet" href="style.css" />
-  <script type="module" src="auth.js" defer></script>
+<script src="https://www.paypal.com/sdk/js?client-id=Ab77PEENW-LJ6z_wDyB0UjmnJaEnHAqQgfd7QBJlvKkOBHOttYaBKDnnweDC1v6HE84FnO3OzbInVMOS&currency=GBP"></script>
+<!--<script src="https://www.paypal.com/sdk/js?client-id=ASLjkBWymcN40tlT0LdvMp67ZS6n3qhFhAw6R377dD7DnS6BEffKlYk3jKyomwrmC-1Qy6Nb4-gH_eZK&currency=GBP"></script>-->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
-  <script src="https://www.paypal.com/sdk/js?client-id=Ab77PEENW-LJ6z_wDyB0UjmnJaEnHAqQgfd7QBJlvKkOBHOttYaBKDnnweDC1v6HE84FnO3OzbInVMOS&currency=GBP"></script>
-
 </head>
 <body>
 
@@ -21,6 +20,7 @@
   <!-- Main Centered Content -->
   <div class="container" style="text-align: center;">
     <img src="images/Light.jpg" alt="Spirit Sidekick Logo" class="header-logo" />
+    <h2>Exclusive Members Content</h2>
     <p>Please select a discipline to view the available exercises</p>
   </div>
 
@@ -36,7 +36,6 @@
   </nav>
 </header>
 
-
 <main class="container">
   <div id="categoryGrid" class="card-grid">
     <!-- Discipline cards inserted here -->
@@ -49,16 +48,29 @@
   </div>
 </main>
 
-
-  <footer class="site-footer">
-    &copy; Psyche Education and Research Centre Ltd 14794589 | All Rights Reserved.
-  </footer>
+<footer class="site-footer">
+  &copy; Psyche Education and Research Centre Ltd 14794589 | All Rights Reserved.
+</footer>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, getDocs, query, where, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore,
+    collection,
+    getDocs,
+    query,
+    where,
+    doc,
+    setDoc,
+    getDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import {
+    getAuth,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+  // Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyA3bQPYdV4Radx6xohL40KbOq2vnVVspzE",
     authDomain: "spirit-sidekick.firebaseapp.com",
@@ -69,6 +81,7 @@
     measurementId: "G-V6SF73FXMK"
   };
 
+  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const auth = getAuth(app);
@@ -97,10 +110,12 @@
   const backBtn = document.getElementById("backBtn");
   const logoutBtn = document.getElementById("logoutBtn");
 
-  // Require login - redirect if not authenticated
+  // Redirect if not logged in
   onAuthStateChanged(auth, user => {
     if (!user) {
-      window.location.href = "index.html"; // or your login page
+      window.location.href = "index.html"; // login page
+    } else {
+      loadExercises();
     }
   });
 
@@ -112,7 +127,7 @@
       card.className = "card";
 
       const img = document.createElement("img");
-      img.src = disciplineImages[discipline] || "images/default.png";  // fallback image
+      img.src = disciplineImages[discipline] || "images/default.png"; // fallback
       img.alt = discipline;
 
       const label = document.createElement("div");
@@ -129,111 +144,99 @@
       categoryGrid.appendChild(card);
     });
 
-    categoryGrid.style.display = "grid";  
+    categoryGrid.style.display = "grid";
     exercisesContainer.style.display = "none";
     exerciseList.innerHTML = "";
     disciplineTitle.textContent = "";
   }
 
-
-const user = auth.currentUser;
-let userPurchases = {};
-
-if (user) {
-  const userPurchaseDoc = await getDoc(doc(db, "purchases", user.uid));
-  if (userPurchaseDoc.exists()) {
-    userPurchases = userPurchaseDoc.data();
-  }
-}
-
-
-async function loadExercises() {
-  const discipline = localStorage.getItem("selectedDiscipline");
-  if (!discipline) {
-    showDisciplineCards();
-    return;
-  }
-
-  disciplineTitle.textContent = discipline;
-  categoryGrid.style.display = "none";       // <-- HIDE categories
-  exercisesContainer.style.display = "block"; // <-- SHOW exercises container
-
-  exerciseList.innerHTML = "Loading...";
-
-  const user = auth.currentUser;
-  let userPurchases = {};
-
-  if (user) {
-    const userPurchaseDoc = await getDoc(doc(db, "purchases", user.uid));
-    if (userPurchaseDoc.exists()) {
-      userPurchases = userPurchaseDoc.data();
+  async function loadExercises() {
+    const discipline = localStorage.getItem("selectedDiscipline");
+    if (!discipline) {
+      showDisciplineCards();
+      return;
     }
-  }
 
-  const q = query(collection(db, "exercises"), where("discipline", "==", discipline));
-  const snapshot = await getDocs(q);
+    disciplineTitle.textContent = discipline;
+    categoryGrid.style.display = "none";
+    exercisesContainer.style.display = "block";
 
-  exerciseList.innerHTML = "";
+    exerciseList.innerHTML = "Loading...";
 
-  if (snapshot.empty) {
-    exerciseList.innerHTML = `<p>No exercises found for ${discipline}.</p>`;
-    return;
-  }
+    const user = auth.currentUser;
+    let userPurchases = {};
 
-  snapshot.forEach(doc => {
-    const exercise = doc.data();
-    const item = document.createElement("div");
-    item.classList.add("exercise-item");
-    const pdfId = doc.id;
-    const purchased = !!userPurchases[pdfId];
-
-    item.innerHTML = `
-      <h3>${exercise.title}</h3>
-      <p>${exercise.description}</p>
-      <p><strong>Price:</strong> £${exercise.price?.toFixed(2) || "Free"}</p>
-      <div id="pdf-access-${pdfId}" class="${purchased ? '' : 'locked'}">
-  ${purchased 
-    ? `<a href="${exercise.pdfUrl}" target="_blank" rel="noopener noreferrer" class="purchased">✅ View PDF (Purchased)</a>`
-    : `<div id="paypal-button-container-${pdfId}"></div>`
-  }
-</div>
-      <hr>
-    `;
-    exerciseList.appendChild(item);
-
-    if (!purchased) {
-      paypal.Buttons({
-        createOrder: function(data, actions) {
-          return actions.order.create({
-            purchase_units: [{
-              amount: {
-                value: exercise.price?.toFixed(2) || "0.00"
-              },
-              description: exercise.title
-            }]
-          });
-        },
-        onApprove: function(data, actions) {
-          return actions.order.capture().then(async function(details) {
-            const user = auth.currentUser;
-            if (user) {
-              const purchaseRef = doc(db, "purchases", user.uid);
-              await setDoc(purchaseRef, { [pdfId]: true }, { merge: true });
-            }
-
-            const purchaseContainer = document.getElementById(`pdf-access-${pdfId}`);
-            purchaseContainer.innerHTML = `<p style="color: green; font-weight: bold;">✅ Payment successful! Unlocking your PDF...</p>`;
-
-            setTimeout(() => {
-              purchaseContainer.innerHTML = `<a href="${exercise.pdfUrl}" target="_blank" rel="noopener noreferrer" class="purchased">✅ View PDF (Purchased)</a>`;
-            }, 3000);
-          });
-        }
-      }).render(`#paypal-button-container-${pdfId}`);
+    if (user) {
+      const userPurchaseDoc = await getDoc(doc(db, "purchases", user.uid));
+      if (userPurchaseDoc.exists()) {
+        userPurchases = userPurchaseDoc.data();
+      }
     }
-  }); // end of snapshot.forEach
-} // end of loadExercises
 
+    const q = query(collection(db, "exercises"), where("discipline", "==", discipline));
+    const snapshot = await getDocs(q);
+
+    exerciseList.innerHTML = "";
+
+    if (snapshot.empty) {
+      exerciseList.innerHTML = `<p>No exercises found for ${discipline}.</p>`;
+      return;
+    }
+
+    snapshot.forEach(docSnap => {
+      const exercise = docSnap.data();
+      const item = document.createElement("div");
+      item.classList.add("exercise-item");
+      const pdfId = docSnap.id;
+      const purchased = !!userPurchases[pdfId];
+
+      item.innerHTML = `
+        <h3>${exercise.title}</h3>
+        <p>${exercise.description}</p>
+        <p><strong>Price:</strong> £${exercise.price?.toFixed(2) || "Free"}</p>
+        <div id="pdf-access-${pdfId}" class="${purchased ? '' : 'locked'}">
+          ${
+            purchased
+              ? `<a href="${exercise.pdfUrl}" target="_blank" rel="noopener noreferrer" class="purchased">✅ View PDF (Purchased)</a>`
+              : `<div id="paypal-button-container-${pdfId}"></div>`
+          }
+        </div>
+        <hr>
+      `;
+      exerciseList.appendChild(item);
+
+      if (!purchased) {
+        paypal.Buttons({
+          createOrder: function(data, actions) {
+            return actions.order.create({
+              purchase_units: [{
+                amount: {
+                  value: exercise.price?.toFixed(2) || "0.00"
+                },
+                description: exercise.title
+              }]
+            });
+          },
+          onApprove: function(data, actions) {
+            return actions.order.capture().then(async function(details) {
+              const user = auth.currentUser;
+              if (user) {
+                const purchaseRef = doc(db, "purchases", user.uid);
+                await setDoc(purchaseRef, { [pdfId]: true }, { merge: true });
+              }
+
+              const purchaseContainer = document.getElementById(`pdf-access-${pdfId}`);
+              purchaseContainer.innerHTML = `<p style="color: green; font-weight: bold;">✅ Payment successful! Unlocking your PDF...</p>`;
+
+              setTimeout(() => {
+                purchaseContainer.innerHTML = `<a href="${exercise.pdfUrl}" target="_blank" rel="noopener noreferrer" class="purchased">✅ View PDF (Purchased)</a>`;
+              }, 3000);
+            });
+          }
+        }).render(`#paypal-button-container-${pdfId}`);
+      }
+    });
+  }
 
   backBtn.addEventListener("click", () => {
     localStorage.removeItem("selectedDiscipline");
@@ -242,20 +245,22 @@ async function loadExercises() {
 
   logoutBtn.addEventListener("click", async () => {
     await signOut(auth);
-    window.location.href = "index.html"; // or login page
+    window.location.href = "index.html"; // login page
   });
 
-  // Initial load
-  loadExercises();
+  // Start by showing disciplines if no discipline selected
+  if (!localStorage.getItem("selectedDiscipline")) {
+    showDisciplineCards();
+  }
+  
+  // Burger menu toggle
+  document.getElementById('burger').addEventListener('click', () => {
+    document.getElementById('sideMenu').classList.add('open');
+  });
 
-document.getElementById('burger').addEventListener('click', () => {
-  document.getElementById('sideMenu').classList.add('open');
-});
-
-document.getElementById('closeBtn').addEventListener('click', () => {
-  document.getElementById('sideMenu').classList.remove('open');
-});
-
+  document.getElementById('closeBtn').addEventListener('click', () => {
+    document.getElementById('sideMenu').classList.remove('open');
+  });
 </script>
 
 </body>

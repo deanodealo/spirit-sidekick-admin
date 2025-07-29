@@ -272,3 +272,16 @@ a.purchased:hover {
   white-space: nowrap;
   font-size: 12px;
 }
+
+.locked a.purchased {
+  pointer-events: auto;   /* Enable clicking */
+  color: green !important;
+  cursor: pointer;
+  opacity: 1;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.locked a.purchased:hover::after {
+  content: none !important;
+}
