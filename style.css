@@ -216,6 +216,19 @@ header {
   background-color: #e0f7f5;
 }
 
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #074d27; /* matches your burger color */
+  user-select: none;
+  z-index: 1100; /* above side menu */
+  font-weight: bold;
+}
+
+
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

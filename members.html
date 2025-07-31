@@ -11,7 +11,7 @@
 </head>
 <body>
 
-<header style="position: relative;">
+<header>
   <!-- Burger Menu Container -->
   <div class="burger-container">
     <div class="burger" id="burger">&#9776;</div>
@@ -23,18 +23,21 @@
     <h2>Exclusive Members Content</h2>
     <p>Please select a discipline to view the available exercises</p>
   </div>
-
-  <!-- Side Menu -->
-  <nav class="side-menu" id="sideMenu">
-    <div class="close-btn" id="closeBtn">&times;</div>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="mission.html">Our Mission</a></li>
-      <li><a href="newsandevents.html">News & Events</a></li>
-      <li><a href="#" id="logoutBtn">Logout</a></li>
-    </ul>
-  </nav>
 </header>
+
+<!-- Side Menu moved outside header -->
+<nav class="side-menu" id="sideMenu">
+  <div class="close-btn" id="closeBtn">&times;</div>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="mission.html">Our Mission</a></li>
+    <li><a href="newsandevents.html">News & Events</a></li>
+    <li id="logoutMenuItem" style="display: none;">
+      <a href="#" id="logoutBtn">Logout</a>
+    </li>
+  </ul>
+</nav>
+
 
 <main class="container">
   <div id="categoryGrid" class="card-grid">
@@ -103,165 +106,176 @@
     "Spiritual Philosophy": "images/Spiritual_Philosophy.png"
   };
 
-  const categoryGrid = document.getElementById("categoryGrid");
-  const exercisesContainer = document.getElementById("exercisesContainer");
-  const exerciseList = document.getElementById("exerciseList");
-  const disciplineTitle = document.getElementById("disciplineTitle");
-  const backBtn = document.getElementById("backBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
+  document.addEventListener("DOMContentLoaded", () => {
+    // DOM elements
+    const categoryGrid = document.getElementById("categoryGrid");
+    const exercisesContainer = document.getElementById("exercisesContainer");
+    const exerciseList = document.getElementById("exerciseList");
+    const disciplineTitle = document.getElementById("disciplineTitle");
+    const backBtn = document.getElementById("backBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const logoutMenuItem = document.getElementById("logoutMenuItem");
 
-  // Redirect if not logged in
-  onAuthStateChanged(auth, user => {
-    if (!user) {
-      window.location.href = "index.html"; // login page
-    } else {
-      loadExercises();
-    }
-  });
-
-  // Show discipline cards for selection with images
-  function showDisciplineCards() {
-    categoryGrid.innerHTML = "";
-    disciplines.forEach(discipline => {
-      const card = document.createElement("div");
-      card.className = "card";
-
-      const img = document.createElement("img");
-      img.src = disciplineImages[discipline] || "images/default.png"; // fallback
-      img.alt = discipline;
-
-      const label = document.createElement("div");
-      label.textContent = discipline;
-
-      card.appendChild(img);
-      card.appendChild(label);
-
-      card.addEventListener("click", () => {
-        localStorage.setItem("selectedDiscipline", discipline);
+    // Redirect if not logged in
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        window.location.href = "index.html"; // login page
+      } else {
         loadExercises();
+        if (logoutMenuItem) {
+          logoutMenuItem.style.display = 'block';
+        }
+      }
+    });
+
+    // Show discipline cards for selection with images
+    function showDisciplineCards() {
+      categoryGrid.innerHTML = "";
+      disciplines.forEach(discipline => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const img = document.createElement("img");
+        img.src = disciplineImages[discipline] || "images/default.png"; // fallback
+        img.alt = discipline;
+
+        const label = document.createElement("div");
+        label.textContent = discipline;
+
+        card.appendChild(img);
+        card.appendChild(label);
+
+        card.addEventListener("click", () => {
+          localStorage.setItem("selectedDiscipline", discipline);
+          loadExercises();
+        });
+
+        categoryGrid.appendChild(card);
       });
 
-      categoryGrid.appendChild(card);
-    });
+      categoryGrid.style.display = "grid";
+      exercisesContainer.style.display = "none";
+      exerciseList.innerHTML = "";
+      disciplineTitle.textContent = "";
+    }
 
-    categoryGrid.style.display = "grid";
-    exercisesContainer.style.display = "none";
-    exerciseList.innerHTML = "";
-    disciplineTitle.textContent = "";
-  }
+    async function loadExercises() {
+      const discipline = localStorage.getItem("selectedDiscipline");
+      if (!discipline) {
+        showDisciplineCards();
+        return;
+      }
 
-  async function loadExercises() {
-    const discipline = localStorage.getItem("selectedDiscipline");
-    if (!discipline) {
+      disciplineTitle.textContent = discipline;
+      categoryGrid.style.display = "none";
+      exercisesContainer.style.display = "block";
+
+      exerciseList.innerHTML = "Loading...";
+
+      const user = auth.currentUser;
+      let userPurchases = {};
+
+      if (user) {
+        const userPurchaseDoc = await getDoc(doc(db, "purchases", user.uid));
+        if (userPurchaseDoc.exists()) {
+          userPurchases = userPurchaseDoc.data();
+        }
+      }
+
+      const q = query(collection(db, "exercises"), where("discipline", "==", discipline));
+      const snapshot = await getDocs(q);
+
+      exerciseList.innerHTML = "";
+
+      if (snapshot.empty) {
+        exerciseList.innerHTML = `<p>No exercises found for ${discipline}.</p>`;
+        return;
+      }
+
+      snapshot.forEach(docSnap => {
+        const exercise = docSnap.data();
+        const item = document.createElement("div");
+        item.classList.add("exercise-item");
+        const pdfId = docSnap.id;
+        const purchased = !!userPurchases[pdfId];
+
+        item.innerHTML = `
+          <h3>${exercise.title}</h3>
+          <p>${exercise.description}</p>
+          <p><strong>Price:</strong> £${exercise.price?.toFixed(2) || "Free"}</p>
+          <div id="pdf-access-${pdfId}" class="${purchased ? '' : 'locked'}">
+            ${
+              purchased
+                ? `<a href="${exercise.pdfUrl}" target="_blank" rel="noopener noreferrer" class="purchased">✅ View PDF (Purchased)</a>`
+                : `<div id="paypal-button-container-${pdfId}"></div>`
+            }
+          </div>
+          <hr>
+        `;
+        exerciseList.appendChild(item);
+
+        if (!purchased) {
+          paypal.Buttons({
+            createOrder: function(data, actions) {
+              return actions.order.create({
+                purchase_units: [{
+                  amount: {
+                    value: exercise.price?.toFixed(2) || "0.00"
+                  },
+                  description: exercise.title
+                }]
+              });
+            },
+            onApprove: function(data, actions) {
+              return actions.order.capture().then(async function(details) {
+                const user = auth.currentUser;
+                if (user) {
+                  const purchaseRef = doc(db, "purchases", user.uid);
+                  await setDoc(purchaseRef, { [pdfId]: true }, { merge: true });
+                }
+
+                const purchaseContainer = document.getElementById(`pdf-access-${pdfId}`);
+                purchaseContainer.innerHTML = `<p style="color: green; font-weight: bold;">✅ Payment successful! Unlocking your PDF...</p>`;
+
+                setTimeout(() => {
+                  purchaseContainer.innerHTML = `<a href="${exercise.pdfUrl}" target="_blank" rel="noopener noreferrer" class="purchased">✅ View PDF (Purchased)</a>`;
+                }, 3000);
+              });
+            }
+          }).render(`#paypal-button-container-${pdfId}`);
+        }
+      });
+    }
+
+    backBtn.addEventListener("click", () => {
+      localStorage.removeItem("selectedDiscipline");
       showDisciplineCards();
-      return;
-    }
-
-    disciplineTitle.textContent = discipline;
-    categoryGrid.style.display = "none";
-    exercisesContainer.style.display = "block";
-
-    exerciseList.innerHTML = "Loading...";
-
-    const user = auth.currentUser;
-    let userPurchases = {};
-
-    if (user) {
-      const userPurchaseDoc = await getDoc(doc(db, "purchases", user.uid));
-      if (userPurchaseDoc.exists()) {
-        userPurchases = userPurchaseDoc.data();
-      }
-    }
-
-    const q = query(collection(db, "exercises"), where("discipline", "==", discipline));
-    const snapshot = await getDocs(q);
-
-    exerciseList.innerHTML = "";
-
-    if (snapshot.empty) {
-      exerciseList.innerHTML = `<p>No exercises found for ${discipline}.</p>`;
-      return;
-    }
-
-    snapshot.forEach(docSnap => {
-      const exercise = docSnap.data();
-      const item = document.createElement("div");
-      item.classList.add("exercise-item");
-      const pdfId = docSnap.id;
-      const purchased = !!userPurchases[pdfId];
-
-      item.innerHTML = `
-        <h3>${exercise.title}</h3>
-        <p>${exercise.description}</p>
-        <p><strong>Price:</strong> £${exercise.price?.toFixed(2) || "Free"}</p>
-        <div id="pdf-access-${pdfId}" class="${purchased ? '' : 'locked'}">
-          ${
-            purchased
-              ? `<a href="${exercise.pdfUrl}" target="_blank" rel="noopener noreferrer" class="purchased">✅ View PDF (Purchased)</a>`
-              : `<div id="paypal-button-container-${pdfId}"></div>`
-          }
-        </div>
-        <hr>
-      `;
-      exerciseList.appendChild(item);
-
-      if (!purchased) {
-        paypal.Buttons({
-          createOrder: function(data, actions) {
-            return actions.order.create({
-              purchase_units: [{
-                amount: {
-                  value: exercise.price?.toFixed(2) || "0.00"
-                },
-                description: exercise.title
-              }]
-            });
-          },
-          onApprove: function(data, actions) {
-            return actions.order.capture().then(async function(details) {
-              const user = auth.currentUser;
-              if (user) {
-                const purchaseRef = doc(db, "purchases", user.uid);
-                await setDoc(purchaseRef, { [pdfId]: true }, { merge: true });
-              }
-
-              const purchaseContainer = document.getElementById(`pdf-access-${pdfId}`);
-              purchaseContainer.innerHTML = `<p style="color: green; font-weight: bold;">✅ Payment successful! Unlocking your PDF...</p>`;
-
-              setTimeout(() => {
-                purchaseContainer.innerHTML = `<a href="${exercise.pdfUrl}" target="_blank" rel="noopener noreferrer" class="purchased">✅ View PDF (Purchased)</a>`;
-              }, 3000);
-            });
-          }
-        }).render(`#paypal-button-container-${pdfId}`);
-      }
     });
-  }
 
-  backBtn.addEventListener("click", () => {
-    localStorage.removeItem("selectedDiscipline");
-    showDisciplineCards();
-  });
+    // Handle logout click
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', async () => {
+        await signOut(auth);
+        window.location.href = "index.html";
+      });
+    }
 
-  logoutBtn.addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "index.html"; // login page
-  });
+    // Start by showing disciplines if no discipline selected
+    if (!localStorage.getItem("selectedDiscipline")) {
+      showDisciplineCards();
+    }
 
-  // Start by showing disciplines if no discipline selected
-  if (!localStorage.getItem("selectedDiscipline")) {
-    showDisciplineCards();
-  }
-  
-  // Burger menu toggle
-  document.getElementById('burger').addEventListener('click', () => {
-    document.getElementById('sideMenu').classList.add('open');
-  });
+    // Burger menu toggle
+    document.getElementById('burger').addEventListener('click', () => {
+      document.getElementById('sideMenu').classList.add('open');
+    });
 
-  document.getElementById('closeBtn').addEventListener('click', () => {
-    document.getElementById('sideMenu').classList.remove('open');
+    document.getElementById('closeBtn').addEventListener('click', () => {
+      document.getElementById('sideMenu').classList.remove('open');
+    });
   });
 </script>
+
 
 </body>
 </html>

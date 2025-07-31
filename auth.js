@@ -169,18 +169,39 @@ document.addEventListener('DOMContentLoaded', () => {
     if (membersItem) membersItem.remove();
   }
 
-  // Logout button logic
-  const logoutBtn = document.getElementById('logoutBtn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      signOut(auth)
-        .then(() => {
-          window.location.href = "index.html";
-        })
-        .catch((error) => {
-          alert("Logout error: " + error.message);
-        });
-    });
+const logoutBtn = document.getElementById('logoutBtn');
+const logoutMenuItem = document.getElementById('logoutMenuItem');
+
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', () => {
+    signOut(auth)
+      .then(() => {
+        window.location.href = "index.html";
+      })
+      .catch((error) => {
+        alert("Logout error: " + error.message);
+      });
+  });
+}
+
+onAuthStateChanged(auth, (user) => {
+  // Show/hide logout menu item
+  if (logoutMenuItem) {
+    logoutMenuItem.style.display = user ? 'block' : 'none';
   }
+
+  // Existing logic you already have for redirect/UI state
+  if (user) {
+    showLoggedInUI(user);
+  } else {
+    if (window.location.pathname.endsWith("members.html")) {
+      window.location.href = "index.html";
+    } else {
+      showLoggedOutUI();
+    }
+  }
+});
+
+
 
 }); // end DOMContentLoaded
